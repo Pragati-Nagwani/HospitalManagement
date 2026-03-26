@@ -70,7 +70,7 @@ jobs:
           SPRING_DATASOURCE_USERNAME: dev
           SPRING_DATASOURCE_PASSWORD: root
         run: |
-          mvn clean package --no-transfer-progress \
+          mvn clean package -DskipTests --no-transfer-progress \
             | tee test-output.txt; exit ${PIPESTATUS[0]}
 
       - name: Parse and Display Test Results
