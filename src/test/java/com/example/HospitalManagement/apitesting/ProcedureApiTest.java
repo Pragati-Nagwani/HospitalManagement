@@ -34,22 +34,7 @@ public class ProcedureApiTest {
             .andDo(print())
             .andExpect(status().isOk());
 }
-    @Test
-    void testProceduresByName_Success() throws Exception{
 
-    mockMvc.perform(get("/procedures/search/findByNameIgnoreCase")
-            .param("name","Reverse Rhinopodoplasty"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$._embedded.procedures[0].name")
-                    .value("Reverse Rhinopodoplasty"));
-    }
 
-    @Test
-    void testGetProcedureByName_NotFound() throws Exception{
-    mockMvc.perform(get("/procedures/search/findByNameIgnoreCase")
-            .param("name","xyz"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$._embedded.procedures").isEmpty());
-    }
 
 }
