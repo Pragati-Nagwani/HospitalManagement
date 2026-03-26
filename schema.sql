@@ -1,4 +1,3 @@
-create database hms_copy;
 use hms_copy;
 
 DROP TABLE IF EXISTS Physician;
