@@ -13,9 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -140,6 +139,121 @@ public class NurseApiTest {
         """;
 
         mockMvc.perform(post("/nurse")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdateNurse_Success() throws Exception {
+        Nurse nurse = new Nurse(601, "Old Name", "Nurse", true, 12345);
+        nurseRepository.saveAndFlush(nurse);
+        String updatedJson = """
+        {
+          "name": "Updated Name",
+          "position": "Head Nurse",
+          "registered": true,
+          "ssn": 9999
+        }
+        """;
+        mockMvc.perform(put("/nurse/601")
+                        .contentType("application/json")
+                        .content(updatedJson))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testUpdateNurse_NotFound() throws Exception {
+
+        String json = """
+        {
+          "name": "Updated Name",
+          "position": "Nurse",
+          "registered": true,
+          "ssn": 1234
+        }
+        """;
+
+        mockMvc.perform(put("/nurse/9999")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isCreated());;
+    }
+    @Test
+    void testUpdateNurse_InvalidData() throws Exception {
+
+        Nurse nurse = new Nurse(602, "Test", "Nurse", true, 11111);
+        nurseRepository.saveAndFlush(nurse);
+
+        String json = """
+        {
+          "name": "Updated",
+          "position": "Nurse",
+          "registered": true,
+          "ssn": "invalid"
+        }
+        """;
+
+        mockMvc.perform(put("/nurse/602")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    void testUpdateNurse_EmptyBody() throws Exception {
+
+        Nurse nurse = new Nurse(603, "Test", "Nurse", true, 11111);
+        nurseRepository.saveAndFlush(nurse);
+
+        mockMvc.perform(put("/nurse/603")
+                        .contentType("application/json")
+                        .content(""))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    void testPatchNurse_Success() throws Exception {
+
+        Nurse nurse = new Nurse(701, "Old Name", "Nurse", true, 12345);
+        nurseRepository.saveAndFlush(nurse);
+
+        String json = """
+        {
+          "name": "Patched Name"
+        }
+        """;
+
+        mockMvc.perform(patch("/nurse/701")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isNoContent());
+    }
+    @Test
+    void testPatchNurse_NotFound() throws Exception {
+
+        String json = """
+        {
+          "name": "Updated"
+        }
+        """;
+
+        mockMvc.perform(patch("/nurse/9999")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    void testPatchNurse_InvalidData() throws Exception {
+
+        Nurse nurse = new Nurse(702, "Test", "Nurse", true, 11111);
+        nurseRepository.saveAndFlush(nurse);
+
+        String json = """
+        {
+          "ssn": "invalid"
+        }
+        """;
+
+        mockMvc.perform(patch("/nurse/702")
                         .contentType("application/json")
                         .content(json))
                 .andExpect(status().isBadRequest());
