@@ -10,12 +10,15 @@ import lombok.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.Persistable;
+import org.springframework.lang.Nullable;
+
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "Physician")
-public class Physician {
+public class Physician implements Persistable<Integer> {
 
     @Id
     @Column(name = "EmployeeID")
@@ -62,4 +65,26 @@ public class Physician {
     @JsonIgnore
     @OneToMany(mappedBy = "physician", fetch = FetchType.LAZY)
     private List<Undergoes> proceduresPerformed;
+
+    @Transient
+    private boolean isNew=true;
+   
+    @Override
+    public boolean isNew() {
+        // TODO Auto-generated method stub
+        return this.isNew;
+    }
+
+    @PostLoad
+    void makrAsNotNew(){
+        this.isNew=false;
+    }
+
+    @Override
+    @Nullable
+    public Integer getId() {
+        // TODO Auto-generated method stub
+        
+        return this.employeeId;
+    }
 }

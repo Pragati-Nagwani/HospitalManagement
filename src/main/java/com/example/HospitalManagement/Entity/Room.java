@@ -2,12 +2,14 @@ package com.example.HospitalManagement.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Persistable;
 
 import java.util.List;
 
@@ -17,13 +19,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "Room")
-public class Room {
+public class Room implements Persistable<Integer> {
 
     @Id
-    @Column(name = "RoomNumber")
+    @Column(name = "RoomNumber" , unique = true)
     private Integer roomNumber;
 
     @NotNull
+    @NotBlank
     @Size(max = 30)
     @Column(name = "RoomType", nullable = false, length = 30)
     private String roomType;
@@ -60,5 +63,27 @@ public class Room {
             this.blockFloor = block.getBlockFloor();
             this.blockCode = block.getBlockCode();
         }
+    }
+
+
+    @JsonIgnore
+    @Transient
+    private boolean isNew = true;
+
+    @PostLoad
+    @PostPersist
+    void markAsNotNew() {
+        this.isNew = false;
+    }
+
+    @Override
+    public Integer getId() {
+        return roomNumber;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isNew() {
+        return isNew;  // JPA uses this instead of the null check
     }
 }

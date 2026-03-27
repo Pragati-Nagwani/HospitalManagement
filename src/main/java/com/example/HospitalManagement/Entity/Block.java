@@ -2,10 +2,10 @@ package com.example.HospitalManagement.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Persistable;
 
 import java.util.List;
 
@@ -14,9 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 @IdClass(BlockId.class)
-@AllArgsConstructor
 @NoArgsConstructor
-public class Block {
+public class Block implements Persistable<BlockId> {
 
     @Id
     @Column(name = "BlockFloor")
@@ -33,6 +32,28 @@ public class Block {
     @JsonIgnore
     @OneToMany(mappedBy = "block", fetch = FetchType.LAZY)
     private List<OnCall> onCallSchedules;
+
+    @JsonIgnore
+    @Transient
+    private boolean isNew = true;
+
+    @PostLoad
+    @PostPersist
+    void markAsNotNew() {
+        this.isNew = false;
+    }
+
+    @Override
+    public BlockId getId() {
+        // Build and return the composite key object
+        return new BlockId(blockFloor, blockCode);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isNew() {
+        return isNew;
+    }
 
     public Block(Integer blockFloor, Integer blockCode) {
         this.blockFloor = blockFloor;
