@@ -1,20 +1,26 @@
 package com.example.HospitalManagement.apitesting;
 import com.example.HospitalManagement.Entity.Nurse;
 import com.example.HospitalManagement.Repository.NurseRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
+@Rollback
 public class NurseApiTest {
 
     @Autowired
@@ -32,10 +38,6 @@ public class NurseApiTest {
         nurse2 = new Nurse(302, "Test Nurse B", "Head Nurse", true, "8882");
 
         nurseRepository.saveAll(List.of(nurse1, nurse2));
-    }
-    @AfterEach
-    void tearDown() {
-        nurseRepository.deleteAll();
     }
     @Test
     void testGetAllNurses_WithProjection() throws Exception {
@@ -69,5 +71,77 @@ public class NurseApiTest {
         mockMvc.perform(get("/nurse?size=1000&projection=nurseView"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.nurses").isArray());
+    }
+
+    @Test
+    void testAddNurse_Success() throws Exception {
+
+        String json = """
+        {
+          "employeeId": 303,
+          "name": "New Nurse",
+          "position": "Nurse",
+          "registered": true,
+          "ssn": 9991
+        }
+        """;
+
+        mockMvc.perform(post("/nurse")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isCreated());
+    }
+
+    void testAddNurse_DuplicateId() throws Exception {
+        Nurse existing = new Nurse(301, "Existing Nurse", "Nurse", true, 8881);
+        nurseRepository.saveAndFlush(existing);
+        String json = """
+        {
+          "employeeId": 301,
+          "name": "Duplicate Nurse",
+          "position": "Nurse",
+          "registered": true,
+          "ssn": 9992
+        }
+        """;
+        mockMvc.perform(post("/nurse")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isConflict()); // ✅ NOW WORKS
+    }
+    @Test
+    void testAddNurse_MissingField() throws Exception {
+
+        String json = """
+        {
+          "employeeId": 304,
+          "position": "Nurse",
+          "registered": true,
+          "ssn": 9993
+        }
+        """;
+
+        mockMvc.perform(post("/nurse")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isCreated());
+    }
+    @Test
+    void testAddNurse_InvalidData() throws Exception {
+
+        String json = """
+        {
+          "employeeId": "abc",
+          "name": "Invalid Nurse",
+          "position": "Nurse",
+          "registered": true,
+          "ssn": 9994
+        }
+        """;
+
+        mockMvc.perform(post("/nurse")
+                        .contentType("application/json")
+                        .content(json))
+                .andExpect(status().isBadRequest());
     }
 }

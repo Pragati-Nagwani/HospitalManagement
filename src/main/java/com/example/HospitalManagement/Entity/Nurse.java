@@ -62,6 +62,14 @@ public class Nurse {
         this.ssn = Integer.parseInt(ssn);
     }
 
+    public Nurse(int employeeId, String nurseA, String nurse, boolean registered, int ssn) {
+        this.employeeId = employeeId;
+        this.name = nurseA;
+        this.position = nurse;
+        this.registered = registered;
+        this.ssn = ssn;
+    }
+
     @Transient
     public String getAvailability() {
         return "AVAILABLE";

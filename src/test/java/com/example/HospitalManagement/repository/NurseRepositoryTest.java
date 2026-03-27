@@ -2,11 +2,13 @@ package com.example.HospitalManagement.repository;
 
 import com.example.HospitalManagement.Entity.Nurse;
 import com.example.HospitalManagement.Repository.NurseRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.data.domain.*;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
 
@@ -14,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Transactional
+@Rollback
 class NurseRepositoryTest {
 
     @Autowired
@@ -28,10 +32,7 @@ class NurseRepositoryTest {
 
         nurseRepository.saveAll(List.of(nurse1, nurse2));
     }
-    @AfterEach
-    void tearDown() {
-        nurseRepository.deleteAll();
-    }
+
     @Test
     void testFindAll_DataExists() {
 
@@ -54,4 +55,21 @@ class NurseRepositoryTest {
             nurseRepository.findAll(PageRequest.of(-1, 5));
         });
     }
+    @Test
+    void testSave_NurseSuccess() {
+        Nurse nurse = new Nurse(401, "Repo Nurse", "Nurse", true, 12345);
+        Nurse saved = nurseRepository.save(nurse);
+        assertNotNull(saved);
+        assertEquals(401, saved.getEmployeeId());
+    }
+
+    @Test
+    void testSave_MissingField() {
+        Nurse nurse = new Nurse();
+        nurse.setEmployeeId(403);
+        assertThrows(Exception.class, () -> {
+            nurseRepository.saveAndFlush(nurse);
+        });
+    }
+
 }
