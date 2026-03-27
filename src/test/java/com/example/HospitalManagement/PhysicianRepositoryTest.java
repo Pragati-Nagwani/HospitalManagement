@@ -3,6 +3,8 @@ package com.example.HospitalManagement;
 import com.example.HospitalManagement.Entity.Physician;
 import com.example.HospitalManagement.Repository.PhysicianRepository;
 
+import jakarta.transaction.Transactional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -15,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Transactional
 class PhysicianRepositoryTest {
 
     @Autowired
