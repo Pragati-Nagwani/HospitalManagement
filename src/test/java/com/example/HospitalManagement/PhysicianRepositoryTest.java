@@ -68,7 +68,7 @@ class PhysicianRepositoryTest {
         repo.save(p1);
 
         Physician p2 = new Physician();
-        p2.setEmployeeId(102);
+        p2.setEmployeeId(505);
         p2.setName("Bob");
         p2.setPosition("Cardiologist");
         p2.setSsn(54321);
