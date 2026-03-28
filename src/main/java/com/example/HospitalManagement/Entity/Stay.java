@@ -20,13 +20,13 @@ public class Stay {
     @Column(name = "StayID")
     private Integer stayId;
 
-    @NotNull
-    @Column(name = "Patient", nullable = false)
-    private Integer patient;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Patient", nullable = false)
+    private Patient patientEntity;
 
-    @NotNull
-    @Column(name = "Room", nullable = false)
-    private Integer room;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Room", nullable = false)
+    private Room room;
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
@@ -37,14 +37,6 @@ public class Stay {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "StayEnd", nullable = false)
     private Date stayEnd;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Patient", referencedColumnName = "SSN", insertable = false, updatable = false)
-    private Patient patientEntity;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Room", referencedColumnName = "RoomNumber", insertable = false, updatable = false)
-    private Room roomEntity;
 
     @JsonIgnore
     @OneToMany(mappedBy = "stay", fetch = FetchType.LAZY)
