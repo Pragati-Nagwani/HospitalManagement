@@ -5,7 +5,7 @@ import com.example.HospitalManagement.Entity.Procedure;
 
 @Projection(name = "procedureSummary", types = { Procedure.class })
 public interface ProcedureProjection {
-
+    Integer getCode();
     String getName();
     Double getCost();
 }

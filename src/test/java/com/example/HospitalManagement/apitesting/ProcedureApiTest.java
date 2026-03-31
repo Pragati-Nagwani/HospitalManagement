@@ -26,14 +26,14 @@ public class ProcedureApiTest {
     @Test
     void testGetAllProcedures_Pagination_Success() throws Exception {
 
-        mockMvc.perform(get("/procedures?page=0&size=5"))
+        mockMvc.perform(get("/procedures?page=0&size=10"))
         .andExpect(status().isOk());
 
     }
     @Test
     void testGetAllProcedures_NoData_ShouldReturnEmpty() throws Exception {
 
-        mockMvc.perform(get("/procedures?page=0&size=5"))
+        mockMvc.perform(get("/procedures?page=0&size=10"))
             .andDo(print())
             .andExpect(status().isOk());
 }
@@ -106,6 +106,95 @@ void testUpdateProcedureCost_Success() throws Exception {
     mockMvc.perform(get("/procedures/3001"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.cost").value(4000.0));
+}
+
+@Test
+void testSearchProcedureByName_ExactMatch_Success() throws Exception {
+
+    mockMvc.perform(get("/procedures/search/findByNameContainingIgnoreCase?name=X-Ray&page=0&size=5"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$._embedded.procedures[0].name").value("X-Ray"));
+}
+
+@Test
+void testSearchProcedureByName_PartialMatch_Success() throws Exception {
+
+    mockMvc.perform(get("/procedures/search/findByNameContainingIgnoreCase?name=scan&page=0&size=5"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$._embedded.procedures").isArray())
+            .andExpect(jsonPath("$._embedded.procedures[?(@.name == 'CT Scan')]").exists())
+            .andExpect(jsonPath("$._embedded.procedures[?(@.name == 'MRI Scan')]").exists());
+}
+
+@Test
+void testSearchProcedureByName_CaseInsensitive_Success() throws Exception {
+
+    mockMvc.perform(get("/procedures/search/findByNameContainingIgnoreCase?name=BLOOD&page=0&size=5"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$._embedded.procedures[0].name").value("Blood Test"));
+}
+
+@Test
+void testSearchProcedureByName_NoMatch_ReturnsEmpty() throws Exception {
+
+    mockMvc.perform(get("/procedures/search/findByNameContainingIgnoreCase?name=xyznonexistent999&page=0&size=5"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$._embedded.procedures").isArray())
+            .andExpect(jsonPath("$._embedded.procedures").isEmpty())
+            .andExpect(jsonPath("$.page.totalElements").value(0));
+}
+
+@Test
+void testSearchProcedureByName_Pagination_Success() throws Exception {
+
+    // First create 2 procedures with a unique name no seed data would have
+    String json1 = """
+        {
+          "code": 9901,
+          "name": "UniqueTestProcedureAlpha",
+          "cost": 100
+        }
+        """;
+
+    String json2 = """
+        {
+          "code": 9902,
+          "name": "UniqueTestProcedureBeta",
+          "cost": 200
+        }
+        """;
+
+    mockMvc.perform(post("/procedures")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json1))
+            .andExpect(status().isCreated());
+
+    mockMvc.perform(post("/procedures")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json2))
+            .andExpect(status().isCreated());
+
+    // Now search with size=1 — should find exactly 2 total, 1 per page
+    mockMvc.perform(get("/procedures/search/findByNameContainingIgnoreCase?name=UniqueTestProcedure&page=0&size=1"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$._embedded.procedures").isArray())
+            .andExpect(jsonPath("$._embedded.procedures.length()").value(1))
+            .andExpect(jsonPath("$.page.totalElements").value(2))
+            .andExpect(jsonPath("$.page.totalPages").value(2));
+}
+
+@Test
+void testSearchProcedureByName_EmptyName_ReturnsAll() throws Exception {
+
+    mockMvc.perform(get("/procedures/search/findByNameContainingIgnoreCase?name=&page=0&size=10"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$._embedded.procedures").isArray());
 }
 
 @Test

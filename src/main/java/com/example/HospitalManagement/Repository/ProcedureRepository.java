@@ -5,6 +5,8 @@ import com.example.HospitalManagement.Projection.ProcedureProjection;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,5 +20,7 @@ public interface ProcedureRepository extends JpaRepository<Procedure,Integer>{
 
    @Query("SELECT p FROM Procedure p WHERE TRIM(p.name) = ''")
     List<Procedure> findProceduresWithBlankName();
+
+    Page<Procedure> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
 }
