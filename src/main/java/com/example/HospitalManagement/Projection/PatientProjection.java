@@ -6,7 +6,7 @@ import com.example.HospitalManagement.Entity.Patient;
 
 @Projection(name = "patientSummary", types = { Patient.class })
 public interface PatientProjection {
-
+Integer getSsn();
     String getName();
     String getAddress();
     String getPhone();

@@ -80,7 +80,7 @@ public class Patient implements Persistable<Integer> {
 
    @JsonIgnore
    @Transient
-   private boolean isNew=true;
+   private boolean isNew=true;      
 
    @PostLoad
    @PostPersist
