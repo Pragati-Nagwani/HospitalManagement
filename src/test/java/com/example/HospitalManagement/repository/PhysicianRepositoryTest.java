@@ -1,4 +1,4 @@
-package com.example.HospitalManagement;
+package com.example.HospitalManagement.repository;
 
 import com.example.HospitalManagement.Entity.Physician;
 import com.example.HospitalManagement.Repository.PhysicianRepository;
@@ -28,7 +28,7 @@ class PhysicianRepositoryTest {
     private PhysicianRepository repo;
 
     @Test
-    void testGetPhysicianByName_success(){
+    void testGetPhysicianByName_success() {
         Physician p = new Physician();
         p.setEmployeeId(12);
         p.setName("nikhil");
@@ -41,7 +41,7 @@ class PhysicianRepositoryTest {
         Page<Physician> found = repo.findByName("nikhil", pageable);
 
         assertFalse(found.isEmpty());
-        
+
         // Use .getContent() to get the actual list of doctors from the Page
         boolean containsSurgeon = found.getContent().stream()
                 .anyMatch(physician -> "surgeon".equals(physician.getPosition()));
@@ -49,21 +49,21 @@ class PhysicianRepositoryTest {
     }
 
     @Test
-    void testGetPhysicianByName_NotFound(){
+    void testGetPhysicianByName_NotFound() {
         Pageable pageable = PageRequest.of(0, 5);
         Page<Physician> p = repo.findByName("nik", pageable); // Fixed syntax error here
         assertTrue(p.isEmpty());
     }
 
     @Test
-    void testGetPhysicianByName_NullValue(){
+    void testGetPhysicianByName_NullValue() {
         Pageable pageable = PageRequest.of(0, 5);
         Page<Physician> p = repo.findByName("", pageable);
         assertTrue(p.isEmpty());
     }
 
     @Test
-    void testGetPhysicianByName_InvalidInput(){
+    void testGetPhysicianByName_InvalidInput() {
         Pageable pageable = PageRequest.of(0, 5);
         Page<Physician> p = repo.findByName("21323", pageable);
         assertTrue(p.isEmpty());
@@ -89,8 +89,9 @@ class PhysicianRepositoryTest {
         Page<Physician> found = repo.findByPosition("Cardiologist", pageable);
 
         assertFalse(found.isEmpty());
-        // Use getTotalElements() to check how many items matched the search across all pages
-        assertTrue(found.getTotalElements() >= 2); 
+        // Use getTotalElements() to check how many items matched the search across all
+        // pages
+        assertTrue(found.getTotalElements() >= 2);
     }
 
     @Test
@@ -123,7 +124,8 @@ class PhysicianRepositoryTest {
         Physician found = repo.findBySsn(111000);
         assertNull(found);
     }
-    // You will need to add this import at the top of your file for the Sort feature!
+    // You will need to add this import at the top of your file for the Sort
+    // feature!
     // import org.springframework.data.domain.Sort;
 
     @Test
@@ -150,7 +152,7 @@ class PhysicianRepositoryTest {
         // 3. Assert
         assertFalse(found.isEmpty());
         assertEquals(2, found.getTotalElements());
-        
+
         // Verify Dr. Apple comes BEFORE Dr. Zebra in the list!
         assertEquals("Dr. Apple", found.getContent().get(0).getName());
         assertEquals("Dr. Zebra", found.getContent().get(1).getName());

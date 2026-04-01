@@ -21,4 +21,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 
     @RestResource(path = "byNurse", rel = "byNurse")
     List<Appointment> findByPrepNurse(@Param("nurse") Nurse nurse);
+
+    @RestResource(path = "findByPatientSsn", rel = "findByPatientSsn")
+    List<Appointment> findByPatientSsn(@Param("ssn") Integer ssn);
 }

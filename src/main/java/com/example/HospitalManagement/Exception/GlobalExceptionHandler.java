@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
     private static ResponseEntity<ProblemDetail> roomNumberRequiredResponse(Throwable ex) {
         String message = firstMessageContaining(ex, "manually assigned");
         ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
-                "Room number is required before persisting a new room");
+                "Foreign key constraint violation");
         detail.setProperty("cause", message);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(detail);
     }
@@ -95,24 +95,23 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CertificationNotFoundException.class)
-public ResponseEntity<ProblemDetail> handleCertificationNotFound(
-        CertificationNotFoundException ex) {
-    ProblemDetail detail = ProblemDetail.forStatusAndDetail(
-            HttpStatus.NOT_FOUND, ex.getMessage());
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(detail);
-}
+    public ResponseEntity<ProblemDetail> handleCertificationNotFound(
+            CertificationNotFoundException ex) {
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(detail);
+    }
 
-@ExceptionHandler(RepositoryConstraintViolationException.class)
-public ResponseEntity<ProblemDetail> handleRepositoryConstraintViolation(
-        RepositoryConstraintViolationException ex) {
-    ProblemDetail detail = ProblemDetail.forStatusAndDetail(
-            HttpStatus.BAD_REQUEST, "Validation failed");
-    detail.setProperty("cause", ex.getErrors().getFieldErrors()
-            .stream()
-            .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
-            .toList());
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(detail);
-}
-
+    @ExceptionHandler(RepositoryConstraintViolationException.class)
+    public ResponseEntity<ProblemDetail> handleRepositoryConstraintViolation(
+            RepositoryConstraintViolationException ex) {
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, "Validation failed");
+        detail.setProperty("cause", ex.getErrors().getFieldErrors()
+                .stream()
+                .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
+                .toList());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(detail);
+    }
 
 }

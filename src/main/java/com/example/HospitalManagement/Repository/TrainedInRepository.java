@@ -12,16 +12,19 @@ import org.springframework.data.rest.core.annotation.RestResource;
 
 import com.example.HospitalManagement.Entity.TrainedIn;
 import com.example.HospitalManagement.Entity.TrainedInId;
+import com.example.HospitalManagement.Projection.TrainedInProjection;
 
-@RepositoryRestResource(path = "trainedIn", collectionResourceRel = "trainedIns")
+@RepositoryRestResource(path = "trainedIn", collectionResourceRel = "trainedIns",excerptProjection = TrainedInProjection.class)
 public interface TrainedInRepository extends JpaRepository<TrainedIn, TrainedInId> {
 
     @RestResource(path = "findByTreatment")
     Page<TrainedIn> findByTreatment(@Param("treatment") Integer treatment, Pageable pageable);
 
     @RestResource(path = "findByPhysicianAndTreatment")
-    Optional<TrainedIn> findByPhysicianAndTreatment(
+    Page<TrainedIn> findByPhysicianAndTreatment(
         @Param("physician") Integer physician,
-        @Param("treatment") Integer treatment);
+        @Param("treatment") Integer treatment,
+        Pageable pageable
+    );
 
 }

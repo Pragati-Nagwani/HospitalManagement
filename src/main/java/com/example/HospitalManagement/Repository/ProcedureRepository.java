@@ -1,21 +1,26 @@
 package com.example.HospitalManagement.Repository;
 import com.example.HospitalManagement.Entity.Procedure;
+import com.example.HospitalManagement.Projection.ProcedureProjection;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
-@RepositoryRestResource(path = "procedures")
+@RepositoryRestResource(path = "procedures",excerptProjection = ProcedureProjection.class)
 @Validated
 public interface ProcedureRepository extends JpaRepository<Procedure,Integer>{
    List<Procedure> findByNameIgnoreCase(String name);
 
    @Query("SELECT p FROM Procedure p WHERE TRIM(p.name) = ''")
     List<Procedure> findProceduresWithBlankName();
+
+    Page<Procedure> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
 }

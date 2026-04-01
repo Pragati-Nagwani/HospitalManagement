@@ -1,4 +1,5 @@
-package com.example.HospitalManagement;
+package com.example.HospitalManagement.apitesting;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,6 @@ class MedicationRestTest {
     @Test
     void testGetAllMedications() throws Exception {
 
-       
         Medication m1 = new Medication();
         m1.setCode(10);
         m1.setName("Med1");
@@ -69,8 +69,6 @@ class MedicationRestTest {
     // GET
     // http://localhost:9090/allMedications
 
-
-
     // Test Case 2 : get medication with a particular id
     @Test
     void testGetMedicationById() throws Exception {
@@ -89,7 +87,6 @@ class MedicationRestTest {
     }
     // GET
     // http://localhost:9090/allMedications/30
-
 
     // Test 3 : Create Medication Test
     @Test
@@ -114,9 +111,6 @@ class MedicationRestTest {
     }
     // POST
     // http://localhost:9090/allMedications
-
-
-
 
     // Test 4 : Update Medication Test
     @Test
@@ -144,11 +138,9 @@ class MedicationRestTest {
     // PATCH
     // http://localhost:9090/allMedications/50
 
-
-
     @Test
     void testMedicationNotFound() throws Exception {
         mockMvc.perform(get("/allMedications/9999"))
-                .andExpect(status().isNotFound() );
+                .andExpect(status().isNotFound());
     }
 }

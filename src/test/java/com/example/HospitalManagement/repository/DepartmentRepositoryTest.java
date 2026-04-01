@@ -1,6 +1,4 @@
-package com.example.HospitalManagement;
-
-
+package com.example.HospitalManagement.repository;
 
 import com.example.HospitalManagement.Entity.Department;
 import com.example.HospitalManagement.Entity.Physician;
@@ -19,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) 
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class DepartmentRepositoryTest {
 
     @Autowired
@@ -69,10 +67,10 @@ public class DepartmentRepositoryTest {
     void testFindByName_Pagination() {
         // 1. Setup
         Physician doc = createTestPhysician(603, "Dr. Gamma", 10003333);
-        
+
         // Use a highly unique name to avoid reading existing DB records
         String searchName = "Special_Cardiology_Unit_X";
-        
+
         // Save 2 departments with the exact same name
         departmentRepo.save(new Department(1105, searchName, doc, null));
         departmentRepo.save(new Department(1106, searchName, doc, null));

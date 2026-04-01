@@ -37,8 +37,6 @@ public class AppointmentApiTest {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
-    // ── Seed ─────────────────────────────────────────────────
-
     @BeforeEach
     void setup() {
         if (!physicianRepository.existsById(200)) {

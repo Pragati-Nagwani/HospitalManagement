@@ -1,4 +1,5 @@
-package com.example.HospitalManagement;
+package com.example.HospitalManagement.repository;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,15 +44,14 @@ public class PrescribesRepositoryTest {
     @Autowired
     private MedicationRepository medicationRepository;
 
-    //  Helper method to insert required parent data
+    // Helper method to insert required parent data
     private void insertBaseData() {
 
-       
         Physician doctor = new Physician();
         doctor.setEmployeeId(1);
-        doctor.setName("Dr. Strange");      
-        doctor.setPosition("Surgeon");      
-        doctor.setSsn(1111);                
+        doctor.setName("Dr. Strange");
+        doctor.setPosition("Surgeon");
+        doctor.setSsn(1111);
         physicianRepository.save(doctor);
 
         Patient patient = new Patient();
@@ -59,15 +59,15 @@ public class PrescribesRepositoryTest {
         patient.setName("John Doe");
         patient.setAddress("Test Address");
         patient.setPhone("1234567890");
-        patient.setInsuranceID(555);   
-        patient.setPcp(doctor);             
+        patient.setInsuranceID(555);
+        patient.setPcp(doctor);
         patientRepository.save(patient);
 
         Medication med = new Medication();
         med.setCode(201);
         med.setName("Paracetamol");
         med.setBrand("Cipla");
-        med.setDescription("Pain relief medicine"); 
+        med.setDescription("Pain relief medicine");
         medicationRepository.save(med);
     }
 
@@ -152,25 +152,25 @@ public class PrescribesRepositoryTest {
         // chek size and Test whether all retrieved or not
         assertEquals(2, list.size());
     }
-    
+
     // Test case 5 : Find By patient
     // @Test
     // void testFindByPatient() {
 
-    //     createPhysician();
-    //     createPatient();
-    //     createMedication();
+    // createPhysician();
+    // createPatient();
+    // createMedication();
 
-    //     Date date = new Date();
+    // Date date = new Date();
 
-    //     Prescribes p = new Prescribes(1, 101, 201, date, null, "500mg",
-    //             null, null, null, null);
+    // Prescribes p = new Prescribes(1, 101, 201, date, null, "500mg",
+    // null, null, null, null);
 
-    //     prescribesRepository.save(p);
+    // prescribesRepository.save(p);
 
-    //     List<Prescribes> list = prescribesRepository.findByPatient(101);
+    // List<Prescribes> list = prescribesRepository.findByPatient(101);
 
-    //     assertFalse(list.isEmpty());
-    //     assertEquals(101, list.get(0).getPatient());
+    // assertFalse(list.isEmpty());
+    // assertEquals(101, list.get(0).getPatient());
     // }
 }
