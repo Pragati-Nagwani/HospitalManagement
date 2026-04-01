@@ -26,4 +26,8 @@ public interface PhysicianRepository extends JpaRepository<Physician, Integer> {
     @RestResource(path = "findByNameContaining", rel = "findByNameContaining")
     Page<Physician> findByNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
 
+    @RestResource(path = "findByPositionContaining", rel = "findByPositionContaining")
+    Page<Physician> findByPositionContainingIgnoreCase(@Param("position") String position, Pageable pageable);
+
+
 }
