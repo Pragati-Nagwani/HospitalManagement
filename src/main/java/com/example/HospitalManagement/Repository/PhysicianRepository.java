@@ -5,6 +5,8 @@ package com.example.HospitalManagement.Repository;
 import com.example.HospitalManagement.Entity.Physician;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+// import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -25,5 +27,17 @@ public interface PhysicianRepository extends JpaRepository<Physician, Integer> {
 
     @RestResource(path = "findByNameContaining", rel = "findByNameContaining")
     Page<Physician> findByNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
+
+    @RestResource(path = "findByPositionContaining", rel = "findByPositionContaining")
+    Page<Physician> findByPositionContainingIgnoreCase(@Param("position") String position, Pageable pageable);
+
+   // 4. Smart Search: SSN (Using Native MySQL Query)
+    @RestResource(path = "findBySsnContaining", rel = "findBySsnContaining")
+    @Query(
+        value = "SELECT * FROM physician WHERE CAST(ssn AS CHAR) LIKE CONCAT('%', :ssn, '%')", 
+        countQuery = "SELECT count(*) FROM physician WHERE CAST(ssn AS CHAR) LIKE CONCAT('%', :ssn, '%')", 
+        nativeQuery = true
+    )
+    Page<Physician> findBySsnContaining(@Param("ssn") String ssn, Pageable pageable);
 
 }
