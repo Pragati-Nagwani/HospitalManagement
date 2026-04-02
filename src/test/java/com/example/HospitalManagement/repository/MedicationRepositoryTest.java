@@ -27,7 +27,7 @@ class MedicationRepositoryTest {
     void setup() {
         Medication med = new Medication();
         med.setCode(1);
-        med.setName("Procrastin-X");
+        med.setName("ProcrastinX");
         med.setBrand("TestBrand");
         med.setDescription("Test");
 
@@ -47,7 +47,7 @@ class MedicationRepositoryTest {
         Optional<Medication> getmed = repository.findById(1);
 
         assertTrue(getmed.isPresent());
-        assertEquals("Procrastin-X", getmed.get().getName());
+        assertEquals("ProcrastinX", getmed.get().getName());
     }
 
     // Test case 2 : check if an Id not Exists
@@ -68,13 +68,13 @@ class MedicationRepositoryTest {
     // Test case 4 : findByName Test case
     @Test
     void testFindMedicationByName() {
-        List<Medication> medication_list = repository.findByName("Procrastin-X");
+        List<Medication> medication_list = repository.findByName("ProcrastinX");
 
         // list should not be Empty
         assertFalse(medication_list.isEmpty());
 
         // check whether correct name retrieved from DB
-        assertEquals("Procrastin-X", medication_list.get(0).getName());
+        assertEquals("ProcrastinX", medication_list.get(0).getName());
     }
 
     // Test 5 : Find By Brand Test Case
